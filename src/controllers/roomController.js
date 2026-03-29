@@ -25,7 +25,7 @@ const { db } = require('../../config/firebase');
 //   }
 // };
 
-const { db } = require('../config/firebase');
+// const { db } = require('../config/firebase');
 
 exports.getRoomById = async (req, res) => {
   const { id } = req.params; // Ambil ID ruangan (misal: 202)
