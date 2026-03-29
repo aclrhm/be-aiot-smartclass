@@ -1,4 +1,41 @@
-const { auth, db, admin } = require('../../config/firebase');
+const { auth, db, admin, WEB_API_KEY } = require('../../config/firebase');
+const axios = require('axios');
+
+exports.loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    // Jalur verifikasi password ke Google
+    const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${WEB_API_KEY}`;
+    
+    const response = await axios.post(url, {
+      email,
+      password,
+      returnSecureToken: true
+    });
+
+    const { localId, idToken } = response.data;
+
+    // Ambil data tambahan (Role) dari Firestore
+    const userDoc = await db.collection('users').doc(localId).get();
+
+    if (!userDoc.exists) {
+      return res.status(404).json({ error: "Data user tidak ditemukan di database" });
+    }
+
+    res.status(200).json({
+      message: "Login Berhasil",
+      token: idToken,
+      user: {
+        uid: localId,
+        ...userDoc.data()
+      }
+    });
+  } catch (error) {
+    // Jika password salah atau email tidak terdaftar
+    res.status(401).json({ error: "Email atau Password salah" });
+  }
+};
 
 exports.registerUser = async (req, res) => {
   const { email, password, fullName, role } = req.body;
