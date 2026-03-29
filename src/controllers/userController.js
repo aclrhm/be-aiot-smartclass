@@ -32,9 +32,14 @@ exports.loginUser = async (req, res) => {
       }
     });
   } catch (error) {
-    // Jika password salah atau email tidak terdaftar
-    res.status(401).json({ error: "Email atau Password salah" });
-  }
+  // Tambahkan baris ini untuk melihat alasan spesifik dari Google:
+  console.log("Detail Error:", error.response?.data?.error?.message);
+  
+  res.status(401).json({ 
+    error: "Login Gagal", 
+    message: error.response?.data?.error?.message 
+  });
+}
 };
 
 exports.registerUser = async (req, res) => {
