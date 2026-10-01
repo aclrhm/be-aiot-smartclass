@@ -9,7 +9,7 @@ app.use(express.json());
 app.use("/api", require("./routes/index"));
 
 app.get("/", (req, res) => {
-  res.send("Backend AIoT aktif 🚀");
+  res.send("Backend AIoT aktifbcv");
 });
 
-module.exports = app; 
+module.exports = app;
