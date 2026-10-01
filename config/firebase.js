@@ -16,7 +16,7 @@ if (!admin.apps.length) {
   });
 }
 
-const WEB_API_KEY = "AIzaSyA3flNDN9l1y_ou-eVU0wuo8NHouhgL_po";
+const WEB_API_KEY = "AIzaSyD99sIvmhcv7qqxRzUtYry8QjHqFqHDmgk";
 const db = admin.firestore();
 const auth = admin.auth();
 
