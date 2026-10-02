@@ -1,5 +1,30 @@
 const { db } = require('../../config/firebase');
 
+// exports.getRoomDetail = async (req, res) => {
+//   const { roomId } = req.params;
+//   try {
+//     const roomDoc = await db.collection('rooms').doc(roomId).get();
+    
+//     // Ambil perangkat di ruangan ini
+//     const devicesSnapshot = await db.collection('devices').where('roomId', '==', roomId).get();
+//     const devices = devicesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+//     // Ambil 5 log terakhir ruangan ini
+//     const logsSnapshot = await db.collection('activity_logs')
+//       .where('roomId', '==', roomId)
+//       .orderBy('timestamp', 'desc').limit(5).get();
+//     const logs = logsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+//     res.json({
+//       info: roomDoc.exists ? roomDoc.data() : { message: "Room not found" },
+//       devices,
+//       recentLogs: logs
+//     });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
 exports.getRoomDetail = async (req, res) => {
   const { roomId } = req.params;
   try {
@@ -13,7 +38,17 @@ exports.getRoomDetail = async (req, res) => {
     const logsSnapshot = await db.collection('activity_logs')
       .where('roomId', '==', roomId)
       .orderBy('timestamp', 'desc').limit(5).get();
-    const logs = logsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    
+    // Format timestamp menjadi ISO String / Date murni di backend
+    const logs = logsSnapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        // Konversi Firestore Timestamp ke ISO string jika ada
+        timestamp: data.timestamp?.toDate ? data.timestamp.toDate().toISOString() : data.timestamp
+      };
+    });
 
     res.json({
       info: roomDoc.exists ? roomDoc.data() : { message: "Room not found" },
